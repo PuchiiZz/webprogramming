@@ -120,7 +120,47 @@ $(document).ready(function () {
         });
     }
 
-    // Add Product Function
+    $(document).ready(function () {
+        $('#add-product').on('click', function (e) {
+            e.preventDefault();
+            addProduct();
+        });
+    });
+    // Validate File Before Submission
+    function validateImage() {
+        const fileInput = document.getElementById('product_image');
+        const file = fileInput.files[0];
+        const errorDiv = document.getElementById('image-error');
+
+        // Check if file exists
+        if (!file) {
+            errorDiv.textContent = "Please upload an image file.";
+            fileInput.classList.add('is-invalid');
+            return false;
+        }
+
+        // Check file size (5MB = 5 * 1024 * 1024 bytes)
+        if (file.size > 5 * 1024 * 1024) {
+            errorDiv.textContent = "File size must be under 5MB.";
+            fileInput.classList.add('is-invalid');
+            return false;
+        }
+
+        // Check file format
+        const validFormats = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!validFormats.includes(file.type)) {
+            errorDiv.textContent = "Only JPG, JPEG, and PNG formats are allowed.";
+            fileInput.classList.add('is-invalid');
+            return false;
+        }
+
+        // Clear any error message if validation passes
+        errorDiv.textContent = "";
+        fileInput.classList.remove('is-invalid');
+        return true;
+    }
+
+    // Add Product Function - Modify to include image validation
     function addProduct() {
         $.ajax({
             type: 'GET',
@@ -134,30 +174,36 @@ $(document).ready(function () {
 
                 $('#form-add-product').on('submit', function (e) {
                     e.preventDefault();
-                    saveProduct();
+                    if (validateImage()) {  // Only proceed if image validation passes
+                        saveProduct();
+                    }
                 });
             }
         });
     }
 
-    // Save Product Function
+    // Save Product Function 
     function saveProduct() {
+        let form = new FormData($('#form-add-product')[0]);
         $.ajax({
             type: 'POST',
-            url: '../products/add-product.php',  // Make sure this points to your PHP handler
-            data: $('#form-add-product').serialize(), // Serialize the form data
-            dataType: 'json', // Expect a JSON response
+            url: '../products/add-product.php',
+            data: form,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
             success: function (response) {
                 if (response.status === 'error') {
                     handleProductErrors(response);
                 } else if (response.status === 'success') {
-                    $('#staticBackdrop').modal('hide');
-                    $('#form-add-product')[0].reset();  // Reset the form
+                    $('#modal-add-product').modal('hide');
+                    $('#form-add-product')[0].reset();
                     viewProducts();
                 }
             }
         });
     }
+
 
     function handleProductErrors(response) {
         if (response.codeErr) {

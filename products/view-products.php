@@ -6,7 +6,9 @@
             </div>
         </div>
     </div>
+
     <div class="modal-container"></div>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -44,10 +46,10 @@
                             </div>
                         </div>
                         <div class="page-title-right d-flex align-items-center">
-                            <a id="add-product" href="#" class="btn btn-primary brand-bg-color">Add Product</a>
+                            <a id="add-product" href="#" class="btn btn-primary brand-bg-color" data-bs-toggle="modal"
+                                data-bs-target="#modal-add-product">Add Product</a>
                         </div>
                     </div>
-
 
                     <div class="table-responsive">
                         <table id="table-products" class="table table-centered table-nowrap mb-0">
@@ -60,6 +62,7 @@
                                     <th class="text-start">Price</th>
                                     <th class="text-center">Total Stocks</th>
                                     <th class="text-center">Available Stocks</th>
+                                    <th class="text-center">Image</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -90,6 +93,10 @@
                                             ">
                                             <?= $available ?>
                                         </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <img src="<?= $arr['file_path'] ?>" alt="thumbnail"
+                                            class="img-fluid product-thumbnail">
                                     </td>
                                     <td class="text-nowrap">
                                         <a href="../stocks/stocks.php?id=<?= $arr['id'] ?>"

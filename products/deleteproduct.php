@@ -2,11 +2,11 @@
 
 session_start();
 
-if(isset($_SESSION['account'])){
-    if(!$_SESSION['account']['is_staff']){
+if (isset($_SESSION['account'])) {
+    if (!$_SESSION['account']['is_staff']) {
         header('location: login.php');
     }
-}else{
+} else {
     header('location: login.php');
 }
 

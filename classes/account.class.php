@@ -102,34 +102,7 @@ class Account
         return $data;
     }
 
-    public function getFilteredAccounts($search, $role)
-    {
-        $sql = "SELECT * FROM accounts WHERE 1=1";
-
-        // Add search filter
-        if (!empty($search)) {
-            $sql .= " AND (username LIKE :search OR first_name LIKE :search OR last_name LIKE :search)";
-        }
-
-        // Add role filter
-        if (!empty($role)) {
-            $sql .= " AND role = :role";
-        }
-
-        $stmt = $this->pdo->prepare($sql);
-
-        // Bind parameters
-        if (!empty($search)) {
-            $searchTerm = '%' . $search . '%';
-            $stmt->bindParam(':search', $searchTerm);
-        }
-        if (!empty($role)) {
-            $stmt->bindParam(':role', $role);
-        }
-
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    
 }
 
 // $obj = new Account();

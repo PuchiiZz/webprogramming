@@ -73,11 +73,14 @@ $accountObj = new Account();
                                         <a href="../accounts/editaccount.php?id=<?= $arr['id'] ?>"
                                             class="btn btn-sm btn-outline-success me-1">Edit</a>
                                         <?php if (isset($_SESSION['account']['is_admin']) && $_SESSION['account']['is_admin']) { ?>
-                                        <button class="btn btn-sm btn-outline-danger deleteBtn"
+                                        <button class="btn btn-sm btn-outline-danger deleteBtn me-1"
                                             data-id="<?= $arr['id'] ?>"
                                             data-name="<?= htmlspecialchars($arr['username']) ?>">Delete</button>
                                         <?php } ?>
+                                        <button class="btn btn-sm btn-outline-primary stockInOutBtn"
+                                            data-id="<?= $arr['id'] ?>">Stock-In/Out</button>
                                     </td>
+
                                 </tr>
                                 <?php
                                     $i++;
@@ -116,11 +119,13 @@ $accountObj = new Account();
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select class="form-select" id="role" name="role" required>
+                            <option value="admin">---Select---</option>
                             <option value="admin">Admin</option>
                             <option value="staff">Staff</option>
                             <option value="customer">Customer</option>
                         </select>
                     </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger">Add Account</button>
                 </form>
             </div>
@@ -243,11 +248,11 @@ $(document).ready(function() {
             fetchFilteredAccounts(searchQuery, roleFilter);
         });
 
-        // Function to fetch filtered accounts
+
         function fetchFilteredAccounts(searchQuery, roleFilter) {
             $.ajax({
                 type: 'GET',
-                url: 'get-accounts.php', // Ensure this points to your PHP handler for fetching accounts
+                url: 'get-accounts.php',
                 data: {
                     search: searchQuery,
                     role: roleFilter

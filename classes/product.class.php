@@ -2,7 +2,8 @@
 
 require_once 'database.php';
 
-class Product {
+class Product
+{
     public $id = '';
     public $code = '';
     public $name = '';
@@ -11,11 +12,13 @@ class Product {
 
     protected $db;
 
-    function __construct() {
+    function __construct()
+    {
         $this->db = new Database();
     }
 
-    function add() {
+    function add()
+    {
         $sql = "INSERT INTO product (code, name, category_id, price) VALUES (:code, :name, :category_id, :price);";
         $query = $this->db->connect()->prepare($sql);
         $query->bindParam(':code', $this->code);
@@ -25,7 +28,8 @@ class Product {
         return $query->execute();
     }
 
-    function showAll($keyword='', $category='') {
+    function showAll($keyword = '', $category = '')
+    {
         $sql = "SELECT i.*, p.*, c.name as category_name, SUM(IF(s.status='in', quantity, 0)) as stock_in, SUM(IF(s.status='out', quantity, 0)) as stock_out FROM product p INNER JOIN category c ON p.category_id = c.id LEFT JOIN product_image i ON p.id = i.product_id AND i.image_role = 'main' LEFT JOIN stocks s ON p.id = s.product_id WHERE (p.code LIKE CONCAT('%', :keyword, '%') OR p.name LIKE CONCAT('%', :keyword, '%')) AND (c.id LIKE CONCAT('%', :category, '%')) GROUP BY p.id ORDER BY p.name ASC;";
         $query = $this->db->connect()->prepare($sql);
         $query->bindParam(':keyword', $keyword);
@@ -37,7 +41,8 @@ class Product {
         return $data;
     }
 
-    function edit() {
+    function edit()
+    {
         $sql = "UPDATE product SET code = :code, name = :name, category_id = :category_id, price = :price WHERE id = :id;";
         $query = $this->db->connect()->prepare($sql);
         $query->bindParam(':code', $this->code);
@@ -48,7 +53,8 @@ class Product {
         return $query->execute();
     }
 
-    function fetchRecord($recordID) {
+    function fetchRecord($recordID)
+    {
         $sql = "SELECT * FROM product WHERE id = :recordID;";
         $query = $this->db->connect()->prepare($sql);
         $query->bindParam(':recordID', $recordID);
@@ -59,14 +65,16 @@ class Product {
         return $data;
     }
 
-    function delete($recordID) {
+    function delete($recordID)
+    {
         $sql = "DELETE FROM product WHERE id = :recordID;";
         $query = $this->db->connect()->prepare($sql);
         $query->bindParam(':recordID', $recordID);
         return $query->execute();
     }
 
-    function codeExists($code, $excludeID = null) {
+    function codeExists($code, $excludeID = null)
+    {
         $sql = "SELECT COUNT(*) FROM product WHERE code = :code";
         if ($excludeID) {
             $sql .= " AND id != :excludeID";
@@ -81,7 +89,8 @@ class Product {
         return $count > 0;
     }
 
-    public function fetchCategory() {
+    public function fetchCategory()
+    {
         $sql = "SELECT * FROM category ORDER BY name ASC;";
         $query = $this->db->connect()->prepare($sql);
         $data = null;

@@ -1,46 +1,48 @@
 <?php
-    session_start();
+session_start();
 
-    if(isset($_SESSION['account'])){
-        if(!$_SESSION['account']['is_staff']){
-            header('location: login.php');
-        }
-    }else{
+if (isset($_SESSION['account'])) {
+    if (!$_SESSION['account']['is_staff']) {
         header('location: login.php');
     }
+} else {
+    header('location: login.php');
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product</title>
     <style>
-        /* Styling for the search results */
-        p.search {
-            text-align: center;
-            margin: 20px 0;
-        }
+    /* Styling for the search results */
+    p.search {
+        text-align: center;
+        margin: 20px 0;
+    }
     </style>
 </head>
+
 <body>
     <a href="addproduct.php">Add Product</a>
-    
+
     <?php
-        require_once 'product.class.php';
+    require_once 'product.class.php';
 
-        $productObj = new Product();
+    $productObj = new Product();
 
-        $keyword = $category = '';
-        
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            // Sanitize input from the search form
-            $keyword = htmlentities($_POST['keyword']);
-            $category = htmlentities($_POST['category']);
-        }
+    $keyword = $category = '';
 
-        $array = $productObj->showAll($keyword, $category);
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Sanitize input from the search form
+        $keyword = htmlentities($_POST['keyword']);
+        $category = htmlentities($_POST['category']);
+    }
+
+    $array = $productObj->showAll($keyword, $category);
     ?>
 
     <form action="" method="post">
@@ -48,12 +50,13 @@
         <select name="category" id="category">
             <option value="">All</option>
             <?php
-                $categoryList = $productObj->fetchCategory();
-                foreach ($categoryList as $cat){
+            $categoryList = $productObj->fetchCategory();
+            foreach ($categoryList as $cat) {
             ?>
-                <option value="<?= $cat['id'] ?>" <?= ($category == $cat['id']) ? 'selected' : '' ?>><?= $cat['name'] ?></option>
+            <option value="<?= $cat['id'] ?>" <?= ($category == $cat['id']) ? 'selected' : '' ?>><?= $cat['name'] ?>
+            </option>
             <?php
-                }
+            }
             ?>
         </select>
         <label for="keyword">Search</label>
@@ -71,14 +74,16 @@
             <th>Available Stocks</th>
             <th>Action</th>
         </tr>
-        
+
         <?php
         $i = 1;
         if (empty($array)) {
         ?>
-            <tr>
-                <td colspan="7"><p class="search">No product found.</p></td>
-            </tr>
+        <tr>
+            <td colspan="7">
+                <p class="search">No product found.</p>
+            </td>
+        </tr>
         <?php
         }
         foreach ($array as $arr) {
@@ -96,12 +101,12 @@
                 <a href="stocks.php?id=<?= $arr['id'] ?>">Stock In/Out</a>
                 <a href="editproduct.php?id=<?= $arr['id'] ?>">Edit</a>
                 <?php
-                    if ($_SESSION['account']['is_admin']){
-                ?>
+                    if ($_SESSION['account']['is_admin']) {
+                    ?>
                 <a href="#" class="deleteBtn" data-id="<?= $arr['id'] ?>" data-name="<?= $arr['name'] ?>">Delete</a>
                 <?php
                     }
-                ?>
+                    ?>
             </td>
         </tr>
         <?php
@@ -109,7 +114,8 @@
         }
         ?>
     </table>
-    
+
     <script src="./product.js"></script>
 </body>
+
 </html>
